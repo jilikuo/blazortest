@@ -30,7 +30,7 @@ jobs:
           
       # Publishes Blazor project to the release-folder
       - name: Publish .NET Core Project
-        run: dotnet publish BlazorApp/BlazorApp.csproj -c:Release -p:GHPages=true -o dist/Web --nologo
+        run: dotnet publish BlazorApp/BlazorApp.csproj -c:Release -p:GHPages=true -o BlazorApp/dist/Web --nologo
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -42,4 +42,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.6.3
         with:
           BRANCH: gh-pages
-          FOLDER: dist/Web/wwwroot
+          FOLDER: BlazorApp/dist/Web/wwwroot
