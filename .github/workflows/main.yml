@@ -1,0 +1,43 @@
+name: Create Blazor Project
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write  # Grant write permissions for the contents scope
+
+jobs:
+  create-blazor-project:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0.x'  # Use .NET 8
+
+    - name: Check if BlazorApp directory exists
+      id: check-blazorapp
+      run: |
+        if [ -d "BlazorApp" ]; then echo "exists=true" >> $GITHUB_ENV; else echo "exists=false" >> $GITHUB_ENV; fi
+
+    - name: Create Blazor Project if not exists
+      if: env.exists == 'false'
+      run: |
+        dotnet new blazorwasm -o BlazorApp
+        cd BlazorApp
+        dotnet build
+
+    - name: Commit and push changes if BlazorApp was created
+      if: env.exists == 'false'
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .
+        git commit -m "Create new Blazor project"
+        git push origin main
